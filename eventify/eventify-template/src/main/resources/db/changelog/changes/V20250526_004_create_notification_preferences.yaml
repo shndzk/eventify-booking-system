@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-create-notification-preferences
+      author: eventify
+      changes:
+        - createTable:
+            tableName: notification_preferences
+            columns:
+              - column: {name: id, type: BIGSERIAL, constraints: {primaryKey: true, nullable: false}}
+              - column: {name: user_id, type: BIGINT, constraints: {nullable: false, unique: true, foreignKeyName: fk_notif_user, references: "users(id)"}}
+              - column: {name: notify_new_events, type: BOOLEAN, defaultValueBoolean: true, constraints: {nullable: false}}
+              - column: {name: notify_upcoming, type: BOOLEAN, defaultValueBoolean: true, constraints: {nullable: false}}
+              - column: {name: notify_before_hours, type: INT, defaultValueNumeric: 24, constraints: {nullable: false}}
+      rollback:
+        - dropTable: {tableName: notification_preferences}

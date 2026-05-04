@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: eventify
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/eventify_db}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+        format_sql: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+server:
+  port: 8080
+  error:
+    include-message: always
+  tomcat:
+    relaxed-query-chars: ['[', ']', '{', '}', '|']
+
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:change-me-please-to-a-very-long-random-secret-key-min-256-bits}
+      expiration-minutes: ${JWT_EXPIRATION_MINUTES:1440}
+  booking:
+    expiry-hours: 24
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+logging:
+  level:
+    event.app: DEBUG
+    org.springframework.security: INFO
+
+telegram:
+  bot:
+    token: ${TELEGRAM_BOT_TOKEN}
+    name: ${TELEGRAM_BOT_NAME}
+

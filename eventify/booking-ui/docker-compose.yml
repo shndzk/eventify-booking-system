@@ -1,7 +1,4 @@
-
-
 services:
-  # 1. Фронтенд в Docker с моками (демонстрация)
   frontend-mocks:
     build: .
     ports:
@@ -16,7 +13,6 @@ services:
       timeout: 10s
       retries: 3
 
-  # 2. Фронтенд в Docker с реальным бэкендом (порт 8080 должен быть свободен)
   frontend-backend:
     build: .
     ports:
