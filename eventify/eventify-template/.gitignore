@@ -37,3 +37,24 @@ out/
 .vscode/
 
 /events/covers
+
+
+# Зависимости фронтенда
+**/node_modules/
+**/dist/
+**/build/
+
+# Логи и временные файлы
+*.log
+.DS_Store
+.eslintcache
+
+# Gradle временные файлы
+.gradle/
+build/
+bin/
+
+# IntelliJ IDEA (дополнительно)
+*.iml
+.idea/modules.xml
+.idea/workspace.xml

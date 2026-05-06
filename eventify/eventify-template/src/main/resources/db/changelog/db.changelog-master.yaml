@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include: {file: db/changelog/changes/V20250526_001_create_users.yaml}
+  - include: {file: db/changelog/changes/V20250526_002_create_events.yaml}
+  - include: {file: db/changelog/changes/V20250526_003_create_bookings.yaml}
+  - include: {file: db/changelog/changes/V20250526_004_create_notification_preferences.yaml}
+  - include: {file: db/changelog/changes/V20250526_005_create_telegram_links.yaml}
+  - include: {file: db/changelog/changes/V20250526_006_seed_admin.yaml}

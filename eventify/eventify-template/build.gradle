@@ -1,0 +1,89 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.2'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.openapi.generator' version '7.10.0'
+}
+
+group = 'event'
+version = '0.0.1'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    jjwtVersion = '0.12.6'
+    springdocVersion = '2.8.5'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'org.liquibase:liquibase-core'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:2.2.28"
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+
+    implementation 'org.telegram:telegrambots:6.8.0'
+    implementation 'org.telegram:telegrambots-abilities:6.8.0'
+
+    implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
+
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$projectDir/api/openapi.yaml".toString().replace("\\", "/")
+    outputDir = "$buildDir/generated".toString().replace("\\", "/")
+    apiPackage = "event.app.api"
+    modelPackage = "event.app.dto"
+    configOptions = [
+            interfaceOnly: "true",
+            useSpringBoot3: "true",
+            skipDefaultInterface: "true",
+            useTags: "true",
+            generateSupportingFiles: "false",
+            openApiNullable: "true"
+    ]
+    validateSpec = false
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += "${layout.buildDirectory.get()}/generated/src/main/java"
+        }
+    }
+}
+
+tasks.compileJava {
+    dependsOn tasks.openApiGenerate
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

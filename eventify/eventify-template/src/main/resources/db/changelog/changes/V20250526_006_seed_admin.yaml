@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-seed-admin
+      author: eventify
+      comment: Seed admin (password = Admin12345!)
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: email, value: "admin@eventify.local"}
+              - column: {name: password_hash, value: "$2a$10$6jKSP0ZTfpSS/B7f8EK3Y.tNhhWYvj0eUGz0pVC1hPh8EQYAb8sOS"}
+              - column: {name: role, value: "ADMIN"}
+              - column: {name: created_at, valueComputed: "NOW()"}
+      rollback:
+        - delete: {tableName: users, where: "email = 'admin@eventify.local'"}

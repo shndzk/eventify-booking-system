@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, AuthResponse } from '../types';
-import { apiService } from '../services/api';
+import { api } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    
+
     if (token && userData) {
       try {
         const parsedUser = JSON.parse(userData);
@@ -48,43 +48,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response: AuthResponse = await apiService.login({ email, password });
-      
+      setIsLoading(true);
+      const response: AuthResponse = await api.login({ email, password });
+
       const userData: User = {
-        id: 0, // Backend doesn't return user ID in auth response
+        id: 0,
         email,
-        firstName: email.split('@')[0], // Generate firstName from email
-        lastName: 'User', // Default lastName
-        role: response.role,
+        firstName: email.split('@')[0],
+        lastName: '',
+        role: response.role as any, //
       };
-      
+
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+    } catch (error: any) {
+      const message = error.response?.data?.message || 'Неверный логин или пароль';
+      throw new Error(message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const register = async (email: string, password: string) => {
     try {
-      const response: AuthResponse = await apiService.register({ email, password });
-      
+      setIsLoading(true);
+      const response: AuthResponse = await api.register({ email, password });
+
       const userData: User = {
-        id: 0, // Backend doesn't return user ID in auth response
+        id: 0,
         email,
-        firstName: email.split('@')[0], // Generate firstName from email
-        lastName: 'User', // Default lastName
-        role: response.role,
+        firstName: email.split('@')[0],
+        lastName: '',
+        role: response.role as any,
       };
-      
+
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
-    } catch (error) {
-      console.error('Register error:', error);
-      throw error;
+    } catch (error: any) {
+      const message = error.response?.data?.message || 'Ошибка регистрации';
+      throw new Error(message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -108,4 +114,4 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-}; 
+};
